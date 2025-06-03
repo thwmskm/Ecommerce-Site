@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Analytics</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    table {
+      border-collapse: collapse;
+      width: 80%;
+      margin: 2rem auto;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      text-align: center;
+    }
+    th {
+      background: #f2f2f2;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .error {
+      color: red;
+      text-align: center;
+    }
+
+    .selection-container {
+      display: flex;
+      flex-direction:row;
+      align-items: center; /* Centers content horizontally */
+      justify-content: center; /* Centers content vertically */
+      text-align: center;
+      gap: 10px; /* Adds space between elements */
+      margin: 20px auto; /* Centers horizontally */
+      width: fit-content; /* Ensures container only takes up necessary width */
+    }
+  </style>
+</head>
+<body>
+
+<!-- ITEMS SOLD SECTION -->
+<h1>Admin Analytics: Items Sold (Monthly)</h1>
+  
+<!-- Month/Year Selection -->
+<div class="selection-container">
+  <label for="monthSelect">Select Month:</label>
+  <select id="monthSelect">
+    <option value="1">January</option>
+    <option value="2">February</option>
+    <option value="3" selected>March</option>
+    <option value="4">April</option>
+    <option value="5">May</option>
+    <option value="6">June</option>
+    <option value="7">July</option>
+    <option value="8">August</option>
+    <option value="9">September</option>
+    <option value="10">October</option>
+    <option value="11">November</option>
+    <option value="12">December</option>
+  </select>
+  
+  <label for="yearSelect">Select Year:</label>
+  <select id="yearSelect">
+    <option value="2024">2024</option>
+    <option value="2025" selected>2025</option>
+    <!-- Add/remove years as needed -->
+  </select>
+  
+  <button id="fetchDataBtn">Get Data</button>
+
+  <button id="homeBtn">Home</button>   
+</div>
+
+<script>
+  const homeBtn = document.getElementById("homeBtn");
+
+  homeBtn.addEventListener("click", () => {
+
+
+    // Redirect to the home page
+    window.location.href = "http://localhost:5173/"; // Or the URL of your home page
+  });
+</script>
+
+<div id="itemsSoldError" class="error"></div>
+
+<table id="itemsSoldTable">
+  <thead>
+    <tr>
+      <th>Vehicle ID</th>
+      <th>Sale Date(s)</th>
+      <th>Quantity Sold</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Items Sold rows will be inserted here -->
+  </tbody>
+</table>
+
+  <h1>Admin Analytics: VisitEvent Table</h1>
+  <div id="error" class="error"></div>
+  <table id="visitEventTable">
+    <thead>
+      <tr>
+        <th>IP Address</th>
+        <th>Day</th>
+        <th>VID</th>
+        <th>Event Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data rows will be inserted here -->
+    </tbody>
+  </table>
+
+
+
+  <script>
+    // When the user clicks "Get Data," fetch the items sold for the selected month/year
+    document.getElementById('fetchDataBtn').addEventListener('click', () => {
+      const month = document.getElementById('monthSelect').value;
+      const year = document.getElementById('yearSelect').value;
+      fetchItemsSold(month, year);
+    });
+
+    // Function to fetch and display Items Sold data (grouped by vehicle ID)
+    function fetchItemsSold(month, year) {
+      // Clear any previous error text
+      document.getElementById('itemsSoldError').textContent = '';
+      
+      // Clear previous table rows (except for the header)
+      const tableBody = document.querySelector('#itemsSoldTable tbody');
+      tableBody.innerHTML = '';
+
+     fetch(`http://localhost:3000/admin/analytics/items-sold?month=${month}&year=${year}`)
+
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+          }
+          return response.json();
+        })
+        .then(result => {
+          /*
+            result might look like:
+            {
+              month: "3",
+              year: "2025",
+              data: [
+                {
+                  vehicleId: 123,
+                  saleDate: "2025-03-10T14:00:00.000Z",
+                  quantitySold: 1,
+                  priceAtSale: "19999.99"
+                },
+                {
+                  vehicleId: 123,
+                  saleDate: "2025-03-15T09:30:00.000Z",
+                  quantitySold: 2,
+                  priceAtSale: "19999.99"
+                },
+                {
+                  vehicleId: 999,
+                  saleDate: "2025-03-20T10:00:00.000Z",
+                  quantitySold: 1,
+                  priceAtSale: "25000.00"
+                }
+              ],
+              totalRevenue: 64999.97
+            }
+          */
+
+          const itemsData = result.items || [];
+
+          // We'll group items by vehicleId
+          const groupedByVehicle = {};
+          let overallRevenue = 0;
+
+          itemsData.forEach(item => {
+            const vId = item.vehicleId;
+            const price = parseFloat(item.priceAtSale) || 0;
+            const qty = item.quantitySold || 0;
+            // Convert sale date to local string (or however you want to display it)
+            const dateStr = new Date(item.saleDate).toLocaleString();
+
+            // If not yet in group, initialize
+            if (!groupedByVehicle[vId]) {
+              groupedByVehicle[vId] = {
+                vehicleId: vId,
+                dates: [],          // we'll store a list of date strings
+                totalQuantity: 0
+              };
+            }
+
+            // Add this date to the array
+            groupedByVehicle[vId].dates.push(dateStr);
+
+            // Add to total quantity
+            groupedByVehicle[vId].totalQuantity += qty;
+
+            // Track total revenue (for the final row)
+            overallRevenue += price * qty;
+          });
+
+          // Convert the grouped results into an array
+          const aggregatedResults = Object.values(groupedByVehicle);
+
+          if (aggregatedResults.length === 0) {
+            // No items sold for this month/year
+            tableBody.innerHTML = '<tr><td colspan="3">No items sold data found for this period.</td></tr>';
+          } else {
+            // Populate rows: one per unique vehicleId
+            aggregatedResults.forEach(item => {
+              // We'll join the multiple sale dates into one string, separated by commas
+              // If you prefer each on a new line, you could use <br> or something similar
+              const combinedDates = item.dates.join(', ');
+
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${item.vehicleId}</td>
+                <td>${combinedDates}</td>
+                <td>${item.totalQuantity}</td>
+              `;
+              tableBody.appendChild(row);
+            });
+
+            // Add a final row for total revenue
+            const totalRow = document.createElement('tr');
+            totalRow.innerHTML = `
+              <td colspan="2" style="text-align:right; font-weight:bold;">
+                Total Revenue (Month ${month}/${year}):
+              </td>
+              <td style="font-weight:bold;">
+                $${overallRevenue.toFixed(2)}
+              </td>
+            `;
+            tableBody.appendChild(totalRow);
+          }
+        })
+        .catch(err => {
+          console.error('Error fetching items sold:', err);
+          document.getElementById('itemsSoldError').textContent = 
+            'Error fetching items sold: ' + err.message;
+        });
+    }
+
+
+    // On page load, fetch all VisitEvents
+    fetch('http://localhost:3000/events/all')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok: " + response.statusText);
+        }
+        return response.json();
+      })
+      .then(data => {
+        const tableBody = document.querySelector('#visitEventTable tbody');
+        if (data.length === 0) {
+          tableBody.innerHTML = '<tr><td colspan="4">No events found.</td></tr>';
+        } else {
+          data.forEach(event => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${event.ipaddress}</td>
+              <td>${event.day}</td>
+              <td>${event.vid}</td>
+              <td>${event.eventtype}</td>
+            `;
+            tableBody.appendChild(row);
+          });
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching visit events:', err);
+        document.getElementById('error').textContent = 'Error fetching visit events: ' + err.message;
+      });
+  </script>
+</body>
+</html>
