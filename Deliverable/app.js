@@ -40,7 +40,7 @@ app.get("/admin/analytics", isAdmin, (req, res) => {
 });
 
 //different routers to use
-app.use("/", routes);
+//app.use("/", routes);
 app.use("/checkout", checkoutRoutes);
 app.use("/api/catalog", catalogRoutes);
 
