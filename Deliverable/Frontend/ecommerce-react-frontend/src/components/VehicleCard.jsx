@@ -1,16 +1,23 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
+require("dotenv").config();
 
 const VehicleCard = ({ vehicle }) => {
   return (
     <div className="vehicle-card">
       {vehicle.isHotDeal && <span className="hot-deal">Hot Deal</span>}
       <h3>{vehicle.name}</h3>
-      <p><strong>Brand:</strong> {vehicle.brand}</p>
-      <p><strong>Model:</strong> {vehicle.model} ({vehicle.modelYear})</p>
-      <p><strong>Price:</strong> ${vehicle.price.toLocaleString()}</p>
+      <p>
+        <strong>Brand:</strong> {vehicle.brand}
+      </p>
+      <p>
+        <strong>Model:</strong> {vehicle.model} ({vehicle.modelYear})
+      </p>
+      <p>
+        <strong>Price:</strong> ${vehicle.price.toLocaleString()}
+      </p>
       <div className="card-actions">
-        <Link to={`/vehicle/${vehicle.vid}`}>
+        <Link to={`${process.env.BACKEND_URL}/vehicle/${vehicle.vid}`}>
           <button>View Details</button>
         </Link>
         <button onClick={() => alert(`${vehicle.name} added to cart!`)}>

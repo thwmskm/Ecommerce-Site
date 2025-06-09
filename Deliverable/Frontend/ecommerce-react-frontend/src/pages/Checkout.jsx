@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LoanCalculator from "../components/LoanCalculator";
+require("dotenv").config();
 
 function Checkout() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ function Checkout() {
 
   const fetchCart = async () => {
     try {
-      const res = await fetch("/api/cart");
+      const res = await fetch(`${process.env.BACKEND_URL}/api/cart`);
       const data = await res.json();
       setOrderData({ total: data.totalPrice, cartData: data.cart });
     } catch (error) {
@@ -38,10 +39,13 @@ function Checkout() {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const res = await fetch("/checkout/fetchShippingInfo", {
-          method: "GET",
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(
+          `${process.env.BACKEND_URL}/checkout/fetchShippingInfo`,
+          {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const data = await res.json();
         console.log("Fetched shipping data:", data.shipping);
         if (data.hasShipping) {
@@ -67,7 +71,7 @@ function Checkout() {
 
   const clearCart = async () => {
     try {
-      const res = await fetch("/api/cart/clear", {
+      const res = await fetch(`${process.env.BACKEND_URL}/api/cart/clear`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -105,14 +109,17 @@ function Checkout() {
     //console.log("Shipping Info:", shippingInfo);
     //console.log("Address being sent:", shippingInfo.address);
     try {
-      const res = await fetch("/checkout/orderController", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-        body: JSON.stringify(body),
-      });
+      const res = await fetch(
+        `${process.env.BACKEND_URL}/checkout/orderController`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+          body: JSON.stringify(body),
+        }
+      );
       const data = await res.json();
       if (res.ok) {
         alert("Order Successfully Completed!");

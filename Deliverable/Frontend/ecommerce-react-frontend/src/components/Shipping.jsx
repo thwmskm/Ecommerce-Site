@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+require("dotenv").config();
 
 const Shipping = () => {
   const [shipping, setShipping] = useState(null);
@@ -18,7 +19,7 @@ const Shipping = () => {
       return;
     }
 
-    fetch("/checkout/fetchShippingInfo", {
+    fetch(`${process.env.BACKEND_URL}/checkout/fetchShippingInfo`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => response.json())

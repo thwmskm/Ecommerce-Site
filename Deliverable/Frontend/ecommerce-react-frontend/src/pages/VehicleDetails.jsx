@@ -1,6 +1,7 @@
 // File: src/pages/VehicleDetails.jsx
-import React, { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
+require("dotenv").config();
 
 function VehicleDetails() {
   const { id } = useParams();
@@ -9,31 +10,31 @@ function VehicleDetails() {
   const [customOptions, setCustomOptions] = useState({});
   const [selectedCustoms, setSelectedCustoms] = useState({});
   const [finalPrice, setFinalPrice] = useState(null);
-  const [reviewData, setReviewData] = useState({ rating: '5', comment: '' });
+  const [reviewData, setReviewData] = useState({ rating: "5", comment: "" });
   const hasLoggedRef = useRef(false);
 
   // Retrieve current user id from localStorage, if any.
-  const currentUserId = localStorage.getItem('userId');
+  const currentUserId = localStorage.getItem("userId");
   // Log view event
-  async function logVisitEvent(eventtype = 'VIEW') {
+  async function logVisitEvent(eventtype = "VIEW") {
     try {
-      const ipRes = await fetch('https://api.ipify.org?format=json');
+      const ipRes = await fetch("https://api.ipify.org?format=json");
       const ipData = await ipRes.json();
       const userIp = ipData.ip;
-  
-      let route = '';
-      if (eventtype === 'VIEW') {
-        route = 'view-details';
-      } else if (eventtype === 'CART') {
-        route = 'add-to-cart';
-      } else if (eventtype === 'PURCHASE') {
-        route = 'purchase';
+
+      let route = "";
+      if (eventtype === "VIEW") {
+        route = "view-details";
+      } else if (eventtype === "CART") {
+        route = "add-to-cart";
+      } else if (eventtype === "PURCHASE") {
+        route = "purchase";
       }
-  
-      await fetch(`http://localhost:3000/events/${route}`, {
-        method: 'POST',
+
+      await fetch(`${process.env.BACKEND_URL}/events/${route}`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ipaddress: userIp,
@@ -45,51 +46,52 @@ function VehicleDetails() {
       console.error(`❌ Failed to log ${eventtype} event:`, err);
     }
   }
-  
-
-  
 
   // Utility to format today's date as MMDDYYYY
-function getTodayDate() {
-  const today = new Date();
-  return `${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}${today.getFullYear()}`;
-}
-
-
-
+  function getTodayDate() {
+    const today = new Date();
+    return `${String(today.getMonth() + 1).padStart(2, "0")}${String(
+      today.getDate()
+    ).padStart(2, "0")}${today.getFullYear()}`;
+  }
 
   // Fetch vehicle details, custom options, and reviews.
   useEffect(() => {
     async function fetchVehicle() {
       try {
-        const res = await fetch(`/api/catalog/vehicles/${id}`);
+        const res = await fetch(
+          `${process.env.BACKEND_URL}/api/catalog/vehicles/${id}`
+        );
         const data = await res.json();
         setVehicle(data);
         setFinalPrice(data.price);
       } catch (err) {
-        console.error('Error fetching vehicle details:', err);
+        console.error("Error fetching vehicle details:", err);
       }
     }
 
     async function fetchCustomOptions() {
       try {
-        const res = await fetch(`/api/catalog/vehicles/${id}/customizations`);
+        const res = await fetch(
+          `${process.env.BACKEND_URL}/api/catalog/vehicles/${id}/customizations`
+        );
         const data = await res.json();
         // Assume data is grouped by category.
         setCustomOptions(data);
       } catch (err) {
-        console.error('Error fetching customization options:', err);
+        console.error("Error fetching customization options:", err);
       }
     }
 
     async function fetchReviews() {
       try {
-        const res = await fetch(`/api/catalog/vehicles/${id}/reviews`);
+        const res = await fetch(
+          `${process.env.BACKEND_URL}/api/catalog/vehicles/${id}/reviews`
+        );
         const data = await res.json();
         setReviews(data);
       } catch (err) {
-        console.error('Error fetching reviews:', err);
-       
+        console.error("Error fetching reviews:", err);
       }
     }
 
@@ -98,14 +100,11 @@ function getTodayDate() {
     fetchVehicle();
     fetchCustomOptions();
     fetchReviews();
-    
+
     if (!hasLoggedRef.current) {
       logVisitEvent();
       hasLoggedRef.current = true;
     }
-
-
-
   }, [id]);
 
   // Toggle a customization option: deselect if already selected.
@@ -125,17 +124,20 @@ function getTodayDate() {
   const applyCustomizations = async () => {
     const customizationIds = Object.values(selectedCustoms);
     try {
-      const res = await fetch('/api/catalog/vehicles/apply-customization', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ vehicleId: id, customizationIds })
-      });
+      const res = await fetch(
+        `${process.env.BACKEND_URL}/api/catalog/vehicles/apply-customization`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ vehicleId: id, customizationIds }),
+        }
+      );
       const data = await res.json();
       setFinalPrice(data.finalPrice);
-      alert('Customizations applied! Final price updated.');
+      alert("Customizations applied! Final price updated.");
     } catch (err) {
-      console.error('Error applying customizations:', err);
-      alert('There was an error applying your customizations.');
+      console.error("Error applying customizations:", err);
+      alert("There was an error applying your customizations.");
     }
   };
 
@@ -154,37 +156,42 @@ function getTodayDate() {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     if (!currentUserId) {
-      alert('Please log in to leave a review.');
+      alert("Please log in to leave a review.");
       return;
     }
     if (hasUserReviewed) {
-      alert('You have already reviewed this vehicle.');
+      alert("You have already reviewed this vehicle.");
       return;
     }
     try {
-      const res = await fetch('/api/catalog/vehicles/reviews', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          vehicleId: id,
-          userId: currentUserId,
-          rating: Number(reviewData.rating),
-          comment: reviewData.comment
-        })
-      });
+      const res = await fetch(
+        `${process.env.BACKEND_URL}/api/catalog/vehicles/reviews`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            vehicleId: id,
+            userId: currentUserId,
+            rating: Number(reviewData.rating),
+            comment: reviewData.comment,
+          }),
+        }
+      );
       if (res.ok) {
-        const newReviewsRes = await fetch(`/api/catalog/vehicles/${id}/reviews`);
+        const newReviewsRes = await fetch(
+          `${process.env.BACKEND_URL}/api/catalog/vehicles/${id}/reviews`
+        );
         const newReviews = await newReviewsRes.json();
         setReviews(newReviews);
-        setReviewData({ rating: '5', comment: '' });
-        alert('Review submitted successfully.');
+        setReviewData({ rating: "5", comment: "" });
+        alert("Review submitted successfully.");
       } else {
         const errorData = await res.json();
-        alert(errorData.error || 'Failed to submit review.');
+        alert(errorData.error || "Failed to submit review.");
       }
     } catch (err) {
-      console.error('Error submitting review:', err);
-      alert('Error submitting review.');
+      console.error("Error submitting review:", err);
+      alert("Error submitting review.");
     }
   };
 
@@ -196,23 +203,22 @@ function getTodayDate() {
       name: vehicle.name,
       price: finalPrice,
       quantity: 1,
-      customizations: selectedCustoms
+      customizations: selectedCustoms,
     };
-  
-    fetch('/api/cart/add', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+
+    fetch(`${process.env.BACKEND_URL}/api/cart/add`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     })
       .then((res) => res.json())
       .then(() => {
-        logVisitEvent('CART'); // ✅ Log the event
-        alert('Vehicle added to cart!');
-        window.dispatchEvent(new Event('cartUpdated'));
+        logVisitEvent("CART"); // ✅ Log the event
+        alert("Vehicle added to cart!");
+        window.dispatchEvent(new Event("cartUpdated"));
       })
-      .catch((err) => console.error('Error adding to cart:', err));
+      .catch((err) => console.error("Error adding to cart:", err));
   };
-  
 
   if (!vehicle) return <p>Loading vehicle details...</p>;
 
@@ -231,7 +237,10 @@ function getTodayDate() {
           <h1>{vehicle.name}</h1>
           {vehicle.isNew && <span className="vehicle-tag">New Arrival</span>}
           <p className="vehicle-price">
-            ${finalPrice ? parseFloat(finalPrice).toLocaleString() : vehicle.price.toLocaleString()}
+            $
+            {finalPrice
+              ? parseFloat(finalPrice).toLocaleString()
+              : vehicle.price.toLocaleString()}
           </p>
           <p className="vehicle-description">{vehicle.description}</p>
 
@@ -247,11 +256,18 @@ function getTodayDate() {
                       <button
                         key={option.id}
                         type="button"
-                        className={`custom-option-button ${selectedCustoms[category] === option.id ? 'selected' : ''}`}
-                        onClick={() => handleCustomizationClick(category, option.id)}
+                        className={`custom-option-button ${
+                          selectedCustoms[category] === option.id
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          handleCustomizationClick(category, option.id)
+                        }
                       >
                         {option.name}
-                        {option.priceAdjustment > 0 && ` (+$${option.priceAdjustment})`}
+                        {option.priceAdjustment > 0 &&
+                          ` (+$${option.priceAdjustment})`}
                       </button>
                     ))}
                   </div>
@@ -264,7 +280,11 @@ function getTodayDate() {
           )}
 
           {/* Add to Cart Button */}
-          <button className="button" style={{ marginTop: '16px' }} onClick={addToCart}>
+          <button
+            className="button"
+            style={{ marginTop: "16px" }}
+            onClick={addToCart}
+          >
             Add to Cart
           </button>
         </div>
@@ -278,12 +298,16 @@ function getTodayDate() {
             {reviews.map((review) => (
               <div key={review.id} className="review-card">
                 <div className="star-rating">
-                  {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                  {"★".repeat(review.rating)}
+                  {"☆".repeat(5 - review.rating)}
                 </div>
-                <h4 className="review-title">{review.comment.substring(0, 40)}</h4>
+                <h4 className="review-title">
+                  {review.comment.substring(0, 40)}
+                </h4>
                 <p className="review-body">{review.comment}</p>
                 <p className="review-author">
-                  {review.user?.fName} {review.user?.lName} – {new Date(review.createdAt).toLocaleDateString()}
+                  {review.user?.fName} {review.user?.lName} –{" "}
+                  {new Date(review.createdAt).toLocaleDateString()}
                 </p>
               </div>
             ))}
@@ -319,12 +343,16 @@ function getTodayDate() {
                   onChange={handleReviewChange}
                   required
                 ></textarea>
-                <button type="submit" className="button">Submit Review</button>
+                <button type="submit" className="button">
+                  Submit Review
+                </button>
               </form>
             </div>
           )
         ) : (
-          <p>Please <em>log in</em> to leave a review.</p>
+          <p>
+            Please <em>log in</em> to leave a review.
+          </p>
         )}
       </div>
 
@@ -346,7 +374,7 @@ function getTodayDate() {
           </div>
           <div className="info-item">
             <h4>Had Accidents</h4>
-            <p>{vehicle.hasAccidents ? 'Yes' : 'No'}</p>
+            <p>{vehicle.hasAccidents ? "Yes" : "No"}</p>
           </div>
           {vehicle.hasAccidents && vehicle.historyReport && (
             <div className="info-item">

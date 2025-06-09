@@ -1,33 +1,33 @@
 // Header.jsx
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+require("dotenv").config();
 
 function Header() {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   const [userName, setUserName] = useState(null);
   const [cartCount, setCartCount] = useState(0);
   const [compareCount, setCompareCount] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
 
-
   // Function to update cart count from the back-end
   const updateCartCount = () => {
-    fetch('/api/cart')
+    fetch(`${process.env.BACKEND_URL}/api/cart`)
       .then((res) => res.json())
       .then((data) => setCartCount(data.totalItems || 0))
-      .catch((err) => console.error('Error fetching cart:', err));
+      .catch((err) => console.error("Error fetching cart:", err));
   };
 
   // Function to update compare count from localStorage
   const updateCompareCount = () => {
-    const compareItems = localStorage.getItem('vehicles_to_compare');
+    const compareItems = localStorage.getItem("vehicles_to_compare");
     if (compareItems) {
       try {
         const compareArray = JSON.parse(compareItems);
         setCompareCount(compareArray.length);
       } catch (err) {
-        console.error('Error parsing vehicles_to_compare:', err);
+        console.error("Error parsing vehicles_to_compare:", err);
         setCompareCount(0);
       }
     } else {
@@ -38,7 +38,7 @@ function Header() {
   // Get user info on mount
   useEffect(() => {
     if (token) {
-      fetch('/auth/userInfo', {
+      fetch(`${process.env.BACKEND_URL}/auth/userInfo`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => response.json())
@@ -48,10 +48,9 @@ function Header() {
             setIsAdmin(data.user.isAdmin); // Save admin status
           }
         })
-        .catch((error) => console.error('Error fetching user info:', error));
+        .catch((error) => console.error("Error fetching user info:", error));
     }
   }, [token]);
-  
 
   // Listen for custom events and update counts accordingly
   useEffect(() => {
@@ -62,48 +61,52 @@ function Header() {
     const onCartUpdated = () => updateCartCount();
     const onCompareUpdated = () => updateCompareCount();
 
-    window.addEventListener('cartUpdated', onCartUpdated);
-    window.addEventListener('compareUpdated', onCompareUpdated);
+    window.addEventListener("cartUpdated", onCartUpdated);
+    window.addEventListener("compareUpdated", onCompareUpdated);
 
     return () => {
-      window.removeEventListener('cartUpdated', onCartUpdated);
-      window.removeEventListener('compareUpdated', onCompareUpdated);
+      window.removeEventListener("cartUpdated", onCartUpdated);
+      window.removeEventListener("compareUpdated", onCompareUpdated);
     };
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
     window.location.reload();
   };
 
   return (
     <nav className="navbar sticky-navbar">
       <div className="navbar-logo">
-        <h1 onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+        <h1 onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
           Electric Vehicle Store
         </h1>
       </div>
       <ul className="nav-links">
-                {/* Admin analytics */}
-                {isAdmin && (
-      <li>
-        <a href="http://localhost:3000/admin/analytics" target="_blank" rel="noopener noreferrer">
-         Analytics
-       </a>
-    </li>
+        {/* Admin analytics */}
+        {isAdmin && (
+          <li>
+            <a
+              href="http://localhost:3000/admin/analytics"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Analytics
+            </a>
+          </li>
         )}
         <li>
           <Link to="/">Catalog</Link>
         </li>
         <li>
-          <Link to="/compare" className={compareCount > 0 ? 'highlight' : ''}>
-            Compare {compareCount > 0 ? `(${compareCount})` : ''}
+          <Link to="/compare" className={compareCount > 0 ? "highlight" : ""}>
+            Compare {compareCount > 0 ? `(${compareCount})` : ""}
           </Link>
         </li>
         <li>
-          <Link to="/cart" className={cartCount > 0 ? 'highlight' : ''}>
-            Cart {cartCount > 0 ? `(${cartCount})` : ''}
+          <Link to="/cart" className={cartCount > 0 ? "highlight" : ""}>
+            Cart {cartCount > 0 ? `(${cartCount})` : ""}
           </Link>
         </li>
         <li>
@@ -113,7 +116,11 @@ function Header() {
         {token ? (
           <>
             <li className="user-greeting">{userName}</li>
-            <li onClick={handleLogout} className="nav-link" style={{ cursor: 'pointer' }}>
+            <li
+              onClick={handleLogout}
+              className="nav-link"
+              style={{ cursor: "pointer" }}
+            >
               Logout
             </li>
           </>

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+require("dotenv").config();
 
 function FilterPanel({ onApplyFilters }) {
   const [brands, setBrands] = useState([]);
@@ -6,28 +7,28 @@ function FilterPanel({ onApplyFilters }) {
   const [years, setYears] = useState([]);
 
   const [filters, setFilters] = useState({
-    brand: '',
-    shape: '',
-    year: '',
-    accidents: '',
-    hotDeals: ''
+    brand: "",
+    shape: "",
+    year: "",
+    accidents: "",
+    hotDeals: "",
   });
 
   useEffect(() => {
     // Fetch metadata for filters
-    fetch('/api/catalog/metadata')
+    fetch(`${process.env.BACKEND_URL}/api/catalog/metadata`)
       .then((res) => res.json())
       .then((data) => {
         setBrands(data.brands || []);
         setShapes(data.shapes || []);
         setYears(data.years || []);
       })
-      .catch((err) => console.error('Error fetching metadata:', err));
+      .catch((err) => console.error("Error fetching metadata:", err));
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFilters(prev => ({ ...prev, [name]: value }));
+    setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
   const apply = () => onApplyFilters(filters);
@@ -40,7 +41,9 @@ function FilterPanel({ onApplyFilters }) {
         <select name="brand" value={filters.brand} onChange={handleChange}>
           <option value="">All</option>
           {brands.map((brand, idx) => (
-            <option key={idx} value={brand}>{brand}</option>
+            <option key={idx} value={brand}>
+              {brand}
+            </option>
           ))}
         </select>
       </div>
@@ -49,7 +52,9 @@ function FilterPanel({ onApplyFilters }) {
         <select name="shape" value={filters.shape} onChange={handleChange}>
           <option value="">All</option>
           {shapes.map((shape, idx) => (
-            <option key={idx} value={shape}>{shape}</option>
+            <option key={idx} value={shape}>
+              {shape}
+            </option>
           ))}
         </select>
       </div>
@@ -58,13 +63,19 @@ function FilterPanel({ onApplyFilters }) {
         <select name="year" value={filters.year} onChange={handleChange}>
           <option value="">All</option>
           {years.map((year, idx) => (
-            <option key={idx} value={year}>{year}</option>
+            <option key={idx} value={year}>
+              {year}
+            </option>
           ))}
         </select>
       </div>
       <div className="filter-group">
         <label>Accident History:</label>
-        <select name="accidents" value={filters.accidents} onChange={handleChange}>
+        <select
+          name="accidents"
+          value={filters.accidents}
+          onChange={handleChange}
+        >
           <option value="">All</option>
           <option value="yes">With Accidents</option>
           <option value="no">Clean</option>
@@ -72,12 +83,18 @@ function FilterPanel({ onApplyFilters }) {
       </div>
       <div className="filter-group">
         <label>Hot Deals:</label>
-        <select name="hotDeals" value={filters.hotDeals} onChange={handleChange}>
+        <select
+          name="hotDeals"
+          value={filters.hotDeals}
+          onChange={handleChange}
+        >
           <option value="">All</option>
           <option value="yes">Hot Deals</option>
         </select>
       </div>
-      <button onClick={apply} className="btn">Apply Filters</button>
+      <button onClick={apply} className="btn">
+        Apply Filters
+      </button>
     </aside>
   );
 }

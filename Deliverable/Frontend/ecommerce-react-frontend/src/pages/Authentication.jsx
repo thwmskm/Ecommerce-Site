@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+require("dotenv").config();
 
 const Authentication = () => {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
@@ -32,11 +33,14 @@ const Authentication = () => {
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("/checkout/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(loginData),
-      });
+      const response = await fetch(
+        `${process.env.BACKEND_URL}/checkout/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(loginData),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
@@ -54,11 +58,14 @@ const Authentication = () => {
   const handleSubmitRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("/checkout/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(registerData),
-      });
+      const response = await fetch(
+        `${process.env.BACKEND_URL}/checkout/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(registerData),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {

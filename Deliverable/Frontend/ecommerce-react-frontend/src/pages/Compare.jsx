@@ -1,12 +1,13 @@
 // Compare.jsx
 
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+require("dotenv").config();
 
 function Compare() {
   const [vehicles, setVehicles] = useState([]);
   const [comparisonList, setComparisonList] = useState([]);
-  const COMPARE_STORAGE_KEY = 'vehicles_to_compare';
+  const COMPARE_STORAGE_KEY = "vehicles_to_compare";
 
   useEffect(() => {
     const stored = localStorage.getItem(COMPARE_STORAGE_KEY);
@@ -24,7 +25,11 @@ function Compare() {
 
   const fetchComparison = async (idsToFetch) => {
     try {
-      const res = await fetch(`/api/catalog/compare?ids=${idsToFetch.join(',')}`);
+      const res = await fetch(
+        `${process.env.BACKEND_URL}/api/catalog/compare?ids=${idsToFetch.join(
+          ","
+        )}`
+      );
       const data = await res.json();
       setVehicles(data);
     } catch (error) {
@@ -38,7 +43,9 @@ function Compare() {
       <div className="compare-container">
         <h2>Comparison</h2>
         <p>Please add at least one vehicle to compare.</p>
-        <Link className="button" to="/">Back to Catalog</Link>
+        <Link className="button" to="/">
+          Back to Catalog
+        </Link>
       </div>
     );
   }
@@ -61,8 +68,8 @@ function Compare() {
                 <th key={vehicle.vid}>
                   <div className="vehicle-header">
                     <span className="vehicle-name">{vehicle.name}</span>
-                    <button 
-                      className="remove-btn" 
+                    <button
+                      className="remove-btn"
                       onClick={() => handleRemoveVehicle(vehicle.vid)}
                     >
                       Remove
@@ -75,37 +82,53 @@ function Compare() {
           <tbody>
             <tr>
               <td>Brand</td>
-              {vehiclesToDisplay.map(vehicle => <td key={vehicle.vid}>{vehicle.brand}</td>)}
+              {vehiclesToDisplay.map((vehicle) => (
+                <td key={vehicle.vid}>{vehicle.brand}</td>
+              ))}
             </tr>
             <tr>
               <td>Model</td>
-              {vehiclesToDisplay.map(vehicle => <td key={vehicle.vid}>{vehicle.model}</td>)}
+              {vehiclesToDisplay.map((vehicle) => (
+                <td key={vehicle.vid}>{vehicle.model}</td>
+              ))}
             </tr>
             <tr>
               <td>Year</td>
-              {vehiclesToDisplay.map(vehicle => <td key={vehicle.vid}>{vehicle.modelYear}</td>)}
+              {vehiclesToDisplay.map((vehicle) => (
+                <td key={vehicle.vid}>{vehicle.modelYear}</td>
+              ))}
             </tr>
             <tr>
               <td>Price</td>
-              {vehiclesToDisplay.map(vehicle => <td key={vehicle.vid}>${vehicle.price.toLocaleString()}</td>)}
+              {vehiclesToDisplay.map((vehicle) => (
+                <td key={vehicle.vid}>${vehicle.price.toLocaleString()}</td>
+              ))}
             </tr>
             <tr>
               <td>Mileage</td>
-              {vehiclesToDisplay.map(vehicle => <td key={vehicle.vid}>{vehicle.mileage.toLocaleString()} km</td>)}
+              {vehiclesToDisplay.map((vehicle) => (
+                <td key={vehicle.vid}>{vehicle.mileage.toLocaleString()} km</td>
+              ))}
             </tr>
             <tr>
               <td>Shape</td>
-              {vehiclesToDisplay.map(vehicle => <td key={vehicle.vid}>{vehicle.shape}</td>)}
+              {vehiclesToDisplay.map((vehicle) => (
+                <td key={vehicle.vid}>{vehicle.shape}</td>
+              ))}
             </tr>
             <tr>
               <td>Hot Deal</td>
-              {vehiclesToDisplay.map(vehicle => <td key={vehicle.vid}>{vehicle.isHotDeal ? 'Yes' : 'No'}</td>)}
+              {vehiclesToDisplay.map((vehicle) => (
+                <td key={vehicle.vid}>{vehicle.isHotDeal ? "Yes" : "No"}</td>
+              ))}
             </tr>
           </tbody>
         </table>
       </div>
       <div className="actions">
-        <button className="button" onClick={handleClearComparison}>Clear Comparison</button>
+        <button className="button" onClick={handleClearComparison}>
+          Clear Comparison
+        </button>
       </div>
     </div>
   );
@@ -113,16 +136,18 @@ function Compare() {
 
 const handleRemoveVehicle = (vehicleId) => {
   // Example removal function. Update localStorage and state as needed.
-  const stored = JSON.parse(localStorage.getItem('vehicles_to_compare') || '[]');
-  const updated = stored.filter(id => id !== vehicleId);
-  localStorage.setItem('vehicles_to_compare', JSON.stringify(updated));
-  window.dispatchEvent(new Event('compareUpdated'));
+  const stored = JSON.parse(
+    localStorage.getItem("vehicles_to_compare") || "[]"
+  );
+  const updated = stored.filter((id) => id !== vehicleId);
+  localStorage.setItem("vehicles_to_compare", JSON.stringify(updated));
+  window.dispatchEvent(new Event("compareUpdated"));
   window.location.reload();
 };
 
 const handleClearComparison = () => {
-  localStorage.removeItem('vehicles_to_compare');
-  window.dispatchEvent(new Event('compareUpdated'));
+  localStorage.removeItem("vehicles_to_compare");
+  window.dispatchEvent(new Event("compareUpdated"));
   window.location.reload();
 };
 
