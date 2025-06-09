@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "build": "cd Frontend/ecommerce-react-frontend && npm install && npm run build",
     "postinstall": "npm run build"
   },
   "dependencies": {
