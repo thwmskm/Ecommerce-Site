@@ -204,11 +204,11 @@ app.delete("/api/cart/clear", (req, res) => {
 });
 
 // Fallback for React SPA - serve index.html for unknown routes
-app.get("*", (req, res) => {
+/*app.get("*", (req, res) => {
   res.sendFile(
     path.join(__dirname, "Frontend/ecommerce-react-frontend/dist/index.html")
   );
-});
+});*/
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
