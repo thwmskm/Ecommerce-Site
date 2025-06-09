@@ -25,9 +25,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //app.use(express.static(path.join(__dirname, "View")));
 // Serve static files from the React frontend
-app.use(
+/*app.use(
   express.static(path.join(__dirname, "Frontend/ecommerce-react-frontend/dist"))
-);
+);*/
 
 app.use("/events", visitEventRoute);
 app.use("/admin/analytics", adminAnalyticsRoutes);
@@ -214,7 +214,7 @@ app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
 });
 
-app.use(
+/*app.use(
   "/assets",
   express.static(
     path.join(__dirname, "Frontend/ecommerce-react-frontend/dist/assets"),
@@ -228,6 +228,6 @@ app.use(
       },
     }
   )
-);
+);*/
 
 module.exports = app;
