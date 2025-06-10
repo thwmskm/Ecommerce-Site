@@ -1,7 +1,6 @@
 // File: src/pages/VehicleDetails.jsx
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-require("dotenv").config();
 
 function VehicleDetails() {
   const { id } = useParams();
@@ -31,7 +30,7 @@ function VehicleDetails() {
         route = "purchase";
       }
 
-      await fetch(`${process.env.BACKEND_URL}/events/${route}`, {
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/events/${route}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +59,7 @@ function VehicleDetails() {
     async function fetchVehicle() {
       try {
         const res = await fetch(
-          `${process.env.BACKEND_URL}/api/catalog/vehicles/${id}`
+          `${process.env.REACT_APP_BACKEND_URL}/api/catalog/vehicles/${id}`
         );
         const data = await res.json();
         setVehicle(data);
@@ -73,7 +72,7 @@ function VehicleDetails() {
     async function fetchCustomOptions() {
       try {
         const res = await fetch(
-          `${process.env.BACKEND_URL}/api/catalog/vehicles/${id}/customizations`
+          `${process.env.REACT_APP_BACKEND_URL}/api/catalog/vehicles/${id}/customizations`
         );
         const data = await res.json();
         // Assume data is grouped by category.
@@ -86,7 +85,7 @@ function VehicleDetails() {
     async function fetchReviews() {
       try {
         const res = await fetch(
-          `${process.env.BACKEND_URL}/api/catalog/vehicles/${id}/reviews`
+          `${process.env.REACT_APP_BACKEND_URL}/api/catalog/vehicles/${id}/reviews`
         );
         const data = await res.json();
         setReviews(data);
@@ -125,7 +124,7 @@ function VehicleDetails() {
     const customizationIds = Object.values(selectedCustoms);
     try {
       const res = await fetch(
-        `${process.env.BACKEND_URL}/api/catalog/vehicles/apply-customization`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/catalog/vehicles/apply-customization`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -165,7 +164,7 @@ function VehicleDetails() {
     }
     try {
       const res = await fetch(
-        `${process.env.BACKEND_URL}/api/catalog/vehicles/reviews`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/catalog/vehicles/reviews`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -179,7 +178,7 @@ function VehicleDetails() {
       );
       if (res.ok) {
         const newReviewsRes = await fetch(
-          `${process.env.BACKEND_URL}/api/catalog/vehicles/${id}/reviews`
+          `${process.env.REACT_APP_BACKEND_URL}/api/catalog/vehicles/${id}/reviews`
         );
         const newReviews = await newReviewsRes.json();
         setReviews(newReviews);
@@ -206,7 +205,7 @@ function VehicleDetails() {
       customizations: selectedCustoms,
     };
 
-    fetch(`${process.env.BACKEND_URL}/api/cart/add`, {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/cart/add`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

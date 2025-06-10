@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-require("dotenv").config();
 
 function Cart() {
   const [cart, setCart] = useState([]);
@@ -9,7 +8,7 @@ function Cart() {
 
   const fetchCart = async () => {
     try {
-      const res = await fetch(`${process.env.BACKEND_URL}/api/cart`);
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/cart`);
       const data = await res.json();
       setCart(data.cart);
       setTotalPrice(data.totalPrice);
@@ -31,11 +30,14 @@ function Cart() {
       }
 
       // Otherwise, send a request to update the quantity
-      await fetch(`${process.env.BACKEND_URL}/api/cart/update/${cartItemId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ quantity: newQuantity }),
-      });
+      await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/cart/update/${cartItemId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ quantity: newQuantity }),
+        }
+      );
 
       // Fetch the updated cart to refresh the UI
       fetchCart();
@@ -46,9 +48,12 @@ function Cart() {
 
   const removeItem = async (cartItemId) => {
     try {
-      await fetch(`${process.env.BACKEND_URL}/api/cart/remove/${cartItemId}`, {
-        method: "DELETE",
-      });
+      await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/cart/remove/${cartItemId}`,
+        {
+          method: "DELETE",
+        }
+      );
       fetchCart();
     } catch (error) {
       console.error("Error removing item:", error);
@@ -58,7 +63,7 @@ function Cart() {
   const clearCart = async () => {
     if (window.confirm("Are you sure you want to clear your cart?")) {
       try {
-        await fetch(`${process.env.BACKEND_URL}/api/cart/clear`, {
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/cart/clear`, {
           method: "DELETE",
         });
         fetchCart();
@@ -78,13 +83,16 @@ function Cart() {
     }
     //if token exists, verify token
     else {
-      fetch(`${process.env.BACKEND_URL}/checkout/authenticateCheckout`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/checkout/authenticateCheckout`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
         .then((response) => response.json())
         .then((data) => {
           //checks log in status to determine redirect

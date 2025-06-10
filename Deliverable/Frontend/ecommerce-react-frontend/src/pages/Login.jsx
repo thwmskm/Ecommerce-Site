@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-require("dotenv").config();
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -11,18 +10,21 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await res.json();
       if (res.ok) {
         // Save token in localStorage.
         localStorage.setItem("token", data.token);
         // Immediately fetch the user info based on the token.
-        fetch(`${process.env.BACKEND_URL}/auth/userInfo`, {
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/userInfo`, {
           headers: { Authorization: `Bearer ${data.token}` },
         })
           .then((response) => response.json())

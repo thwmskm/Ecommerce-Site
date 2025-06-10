@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-require("dotenv").config();
 
 function FilterPanel({ onApplyFilters }) {
   const [brands, setBrands] = useState([]);
@@ -16,7 +15,7 @@ function FilterPanel({ onApplyFilters }) {
 
   useEffect(() => {
     // Fetch metadata for filters
-    fetch(`${process.env.BACKEND_URL}/api/catalog/metadata`)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/catalog/metadata`)
       .then((res) => res.json())
       .then((data) => {
         setBrands(data.brands || []);

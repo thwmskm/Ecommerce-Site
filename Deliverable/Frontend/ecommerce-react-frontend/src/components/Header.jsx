@@ -1,7 +1,6 @@
 // Header.jsx
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-require("dotenv").config();
 
 function Header() {
   const navigate = useNavigate();
@@ -13,7 +12,7 @@ function Header() {
 
   // Function to update cart count from the back-end
   const updateCartCount = () => {
-    fetch(`${process.env.BACKEND_URL}/api/cart`)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/cart`)
       .then((res) => res.json())
       .then((data) => setCartCount(data.totalItems || 0))
       .catch((err) => console.error("Error fetching cart:", err));
@@ -38,7 +37,7 @@ function Header() {
   // Get user info on mount
   useEffect(() => {
     if (token) {
-      fetch(`${process.env.BACKEND_URL}/auth/userInfo`, {
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/userInfo`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => response.json())

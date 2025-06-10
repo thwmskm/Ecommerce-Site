@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-require("dotenv").config();
 
 function Compare() {
   const [vehicles, setVehicles] = useState([]);
@@ -26,9 +25,9 @@ function Compare() {
   const fetchComparison = async (idsToFetch) => {
     try {
       const res = await fetch(
-        `${process.env.BACKEND_URL}/api/catalog/compare?ids=${idsToFetch.join(
-          ","
-        )}`
+        `${
+          process.env.REACT_APP_BACKEND_URL
+        }/api/catalog/compare?ids=${idsToFetch.join(",")}`
       );
       const data = await res.json();
       setVehicles(data);

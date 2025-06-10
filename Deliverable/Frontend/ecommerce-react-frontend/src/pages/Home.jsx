@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Chatbot from "../components/Chatbot";
-require("dotenv").config();
 
 function Home() {
   const [vehicles, setVehicles] = useState([]);
@@ -34,7 +33,7 @@ function Home() {
 
   // Function to fetch vehicles from the backend
   const fetchVehicles = async (filtersObj = {}) => {
-    let url = `${process.env.BACKEND_URL}/api/catalog/vehicles`;
+    let url = `${process.env.REACT_APP_BACKEND_URL}/api/catalog/vehicles`;
     const queryParams = { ...filtersObj };
     const params = new URLSearchParams(queryParams);
     if (params.toString()) {
@@ -53,7 +52,7 @@ function Home() {
   const fetchMetadata = async () => {
     try {
       const response = await fetch(
-        `${process.env.BACKEND_URL}/api/catalog/metadata`
+        `${process.env.REACT_APP_BACKEND_URL}/api/catalog/metadata`
       );
       const data = await response.json();
       setMetadata(data);

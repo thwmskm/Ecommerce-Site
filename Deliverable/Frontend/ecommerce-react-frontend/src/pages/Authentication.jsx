@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-require("dotenv").config();
 
 const Authentication = () => {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
@@ -34,7 +33,7 @@ const Authentication = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `${process.env.BACKEND_URL}/checkout/login`,
+        `${process.env.REACT_APP_BACKEND_URL}/checkout/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -59,7 +58,7 @@ const Authentication = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `${process.env.BACKEND_URL}/checkout/register`,
+        `${process.env.REACT_APP_BACKEND_URL}/checkout/register`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
