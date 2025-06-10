@@ -1,6 +1,5 @@
-
-const { Sequelize } = require('sequelize');
-require('dotenv').config();
+const { Sequelize } = require("sequelize");
+require("dotenv").config();
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -9,16 +8,17 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
-    logging: false
+    port: process.env.DB_PORT || 3306,
+    logging: false,
   }
 );
 
 const conn = async () => {
   try {
     await sequelize.authenticate();
-    console.log('✅ Connection has been established successfully.');
+    console.log("✅ Connection has been established successfully.");
   } catch (error) {
-    console.error('❌ Unable to connect to the database:', error);
+    console.error("❌ Unable to connect to the database:", error);
   }
 };
 
