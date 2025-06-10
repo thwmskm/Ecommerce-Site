@@ -1,15 +1,15 @@
 // File: vite.config.js
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  base: './',
+  base: "./",
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'http://localhost:3000',
-      '/auth': 'http://localhost:3000',
-      '/checkout': 'http://localhost:3000',
-    }
+      "/api": process.env.REACT_APP_BACKEND_URL,
+      "/auth": process.env.REACT_APP_BACKEND_URL,
+      "/checkout": process.env.REACT_APP_BACKEND_URL,
+    },
   },
 });

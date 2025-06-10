@@ -33,6 +33,7 @@ function Home() {
 
   // Function to fetch vehicles from the backend
   const fetchVehicles = async (filtersObj = {}) => {
+    console.log(process.env.REACT_APP_BACKEND_URL);
     let url = `${process.env.REACT_APP_BACKEND_URL}/api/catalog/vehicles`;
     const queryParams = { ...filtersObj };
     const params = new URLSearchParams(queryParams);
