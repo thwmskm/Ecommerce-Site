@@ -38,7 +38,9 @@ function Home() {
     const queryParams = { ...filtersObj };
     const params = new URLSearchParams(queryParams);
     if (params.toString()) {
-      url = `/api/catalog/filter?${params.toString()}`;
+      url = `${
+        process.env.REACT_APP_BACKEND_URL
+      }/api/catalog/filter?${params.toString()}`;
     }
     try {
       const response = await fetch(url);
