@@ -18,7 +18,7 @@ function Register() {
     e.preventDefault();
     try {
       const res = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/auth/register`,
+        `${import.meta.env.VITE_BACKEND_URL}/auth/register`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

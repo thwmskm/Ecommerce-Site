@@ -18,7 +18,7 @@ const Shipping = () => {
       return;
     }
 
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/checkout/fetchShippingInfo`, {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/checkout/fetchShippingInfo`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => response.json())

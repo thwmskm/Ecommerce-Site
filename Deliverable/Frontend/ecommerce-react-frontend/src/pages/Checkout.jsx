@@ -26,7 +26,7 @@ function Checkout() {
 
   const fetchCart = async () => {
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/cart`);
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart`);
       const data = await res.json();
       setOrderData({ total: data.totalPrice, cartData: data.cart });
     } catch (error) {
@@ -39,7 +39,7 @@ function Checkout() {
     if (token) {
       try {
         const res = await fetch(
-          `${process.env.REACT_APP_BACKEND_URL}/checkout/fetchShippingInfo`,
+          `${import.meta.env.VITE_BACKEND_URL}/checkout/fetchShippingInfo`,
           {
             method: "GET",
             headers: { Authorization: `Bearer ${token}` },
@@ -71,7 +71,7 @@ function Checkout() {
   const clearCart = async () => {
     try {
       const res = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/cart/clear`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/cart/clear`,
         {
           method: "DELETE",
         }
@@ -112,7 +112,7 @@ function Checkout() {
     //console.log("Address being sent:", shippingInfo.address);
     try {
       const res = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/checkout/orderController`,
+        `${import.meta.env.VITE_BACKEND_URL}/checkout/orderController`,
         {
           method: "POST",
           headers: {

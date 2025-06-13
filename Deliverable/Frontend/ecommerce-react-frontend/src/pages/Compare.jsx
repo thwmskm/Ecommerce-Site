@@ -26,7 +26,7 @@ function Compare() {
     try {
       const res = await fetch(
         `${
-          process.env.REACT_APP_BACKEND_URL
+          import.meta.env.VITE_BACKEND_URL
         }/api/catalog/compare?ids=${idsToFetch.join(",")}`
       );
       const data = await res.json();

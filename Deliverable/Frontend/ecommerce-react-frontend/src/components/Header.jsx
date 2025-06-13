@@ -12,7 +12,7 @@ function Header() {
 
   // Function to update cart count from the back-end
   const updateCartCount = () => {
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/cart`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart`)
       .then((res) => res.json())
       .then((data) => setCartCount(data.totalItems || 0))
       .catch((err) => console.error("Error fetching cart:", err));
@@ -37,7 +37,7 @@ function Header() {
   // Get user info on mount
   useEffect(() => {
     if (token) {
-      fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/userInfo`, {
+      fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/userInfo`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => response.json())

@@ -33,7 +33,7 @@ const Authentication = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/checkout/login`,
+        `${import.meta.env.VITE_BACKEND_URL}/checkout/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -58,7 +58,7 @@ const Authentication = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/checkout/register`,
+        `${import.meta.env.VITE_BACKEND_URL}/checkout/register`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

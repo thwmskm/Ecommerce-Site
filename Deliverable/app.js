@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 3000;
 
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 
-app.use(cors({ origin: FRONTEND_ORIGIN, credentials: true }));
+app.use(cors({ origin: FRONTEND_ORIGIN || 5173, credentials: true }));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

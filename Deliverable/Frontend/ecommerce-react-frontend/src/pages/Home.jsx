@@ -33,13 +33,13 @@ function Home() {
 
   // Function to fetch vehicles from the backend
   const fetchVehicles = async (filtersObj = {}) => {
-    console.log(process.env.REACT_APP_BACKEND_URL);
-    let url = `${process.env.REACT_APP_BACKEND_URL}/api/catalog/vehicles`;
+    console.log(import.meta.env.VITE_BACKEND_URL);
+    let url = `${import.meta.env.VITE_BACKEND_URL}/api/catalog/vehicles`;
     const queryParams = { ...filtersObj };
     const params = new URLSearchParams(queryParams);
     if (params.toString()) {
       url = `${
-        process.env.REACT_APP_BACKEND_URL
+        import.meta.env.VITE_BACKEND_URL
       }/api/catalog/filter?${params.toString()}`;
     }
     try {
@@ -55,7 +55,7 @@ function Home() {
   const fetchMetadata = async () => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/catalog/metadata`
+        `${import.meta.env.VITE_BACKEND_URL}/api/catalog/metadata`
       );
       const data = await response.json();
       setMetadata(data);

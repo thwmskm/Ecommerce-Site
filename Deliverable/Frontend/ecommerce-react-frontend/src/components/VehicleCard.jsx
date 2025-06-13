@@ -16,9 +16,7 @@ const VehicleCard = ({ vehicle }) => {
         <strong>Price:</strong> ${vehicle.price.toLocaleString()}
       </p>
       <div className="card-actions">
-        <Link
-          to={`${process.env.REACT_APP_BACKEND_URL}/vehicle/${vehicle.vid}`}
-        >
+        <Link to={`${import.meta.env.VITE_BACKEND_URL}/vehicle/${vehicle.vid}`}>
           <button>View Details</button>
         </Link>
         <button onClick={() => alert(`${vehicle.name} added to cart!`)}>

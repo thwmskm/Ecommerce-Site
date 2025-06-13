@@ -6,7 +6,7 @@ const Cart = ({ onUpdate }) => {
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/cart`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart`)
       .then((response) => response.json())
       .then((data) => {
         setCart(data.cart);
@@ -16,7 +16,7 @@ const Cart = ({ onUpdate }) => {
 
   const handleQuantityChange = (vehicleId, newQuantity) => {
     if (newQuantity < 1) return;
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/cart/update/${vehicleId}`, {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart/update/${vehicleId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity: newQuantity }),

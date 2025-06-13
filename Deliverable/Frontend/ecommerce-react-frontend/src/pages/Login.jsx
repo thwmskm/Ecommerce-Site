@@ -11,7 +11,7 @@ function Login() {
     e.preventDefault();
     try {
       const res = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/auth/login`,
+        `${import.meta.env.VITE_BACKEND_URL}/auth/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -24,7 +24,7 @@ function Login() {
         // Save token in localStorage.
         localStorage.setItem("token", data.token);
         // Immediately fetch the user info based on the token.
-        fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/userInfo`, {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/userInfo`, {
           headers: { Authorization: `Bearer ${data.token}` },
         })
           .then((response) => response.json())
