@@ -29,6 +29,29 @@ app.use(bodyParser.urlencoded({ extended: true }));
   express.static(path.join(__dirname, "Frontend/ecommerce-react-frontend/dist"))
 );*/
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 3600000 },
+    secure: true,
+    sameSite: "none",
+  })
+);
+
+app.use((req, res, next) => {
+  if (!req.session.cart) {
+    req.session.cart = [];
+  }
+  //if the user has not logged in, start guest session
+  if (!req.session.guest) {
+    req.session.guest = true;
+    req.session.user = false;
+  }
+  next();
+});
+
 app.use("/events", visitEventRoute);
 app.use("/admin/analytics", adminAnalyticsRoutes);
 
@@ -49,27 +72,6 @@ app.use("/auth", authRoutes);
 
 //finding vehicles route
 app.use("/vehicles", vehicleRoutes);
-
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 3600000 },
-  })
-);
-
-app.use((req, res, next) => {
-  if (!req.session.cart) {
-    req.session.cart = [];
-  }
-  //if the user has not logged in, start guest session
-  if (!req.session.guest) {
-    req.session.guest = true;
-    req.session.user = false;
-  }
-  next();
-});
 
 app.get("/api/cart", (req, res) => {
   res.json({
