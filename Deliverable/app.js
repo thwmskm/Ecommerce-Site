@@ -19,35 +19,7 @@ const PORT = process.env.PORT || 3000;
 
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 
-//app.use(cors({ origin: FRONTEND_ORIGIN || 5173, credentials: true }));
-
-const rawOrigins = FRONTEND_ORIGIN?.split(",") || [];
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-
-      const isAllowed = rawOrigins.some((allowedOrigin) => {
-        allowedOrigin = allowedOrigin.trim();
-
-        if (allowedOrigin.startsWith("*.")) {
-          const baseDomain = allowedOrigin.slice(2);
-          return origin.endsWith(baseDomain);
-        }
-
-        return origin === allowedOrigin;
-      });
-
-      if (isAllowed) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+app.use(cors({ origin: FRONTEND_ORIGIN || 5173, credentials: true }));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
