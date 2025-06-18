@@ -33,7 +33,6 @@ function Home() {
 
   // Function to fetch vehicles from the backend
   const fetchVehicles = async (filtersObj = {}) => {
-    console.log(import.meta.env.VITE_BACKEND_URL);
     let url = `${import.meta.env.VITE_BACKEND_URL}/api/catalog/vehicles`;
     const queryParams = { ...filtersObj };
     const params = new URLSearchParams(queryParams);

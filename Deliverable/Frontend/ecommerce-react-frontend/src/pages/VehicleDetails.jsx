@@ -40,6 +40,7 @@ function VehicleDetails() {
           day: getTodayDate(),
           vid: id,
         }),
+        credentials: "include",
       });
     } catch (err) {
       console.error(`❌ Failed to log ${eventtype} event:`, err);
@@ -217,6 +218,7 @@ function VehicleDetails() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
+      credentials: "include",
     })
       .then((res) => res.json())
       .then(() => {
