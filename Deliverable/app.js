@@ -87,6 +87,7 @@ app.get("/api/cart", (req, res) => {
       0
     ),
   });
+  console.log("SESSION ID:", req.sessionID);
 });
 
 app.post("/api/cart/add", (req, res) => {
