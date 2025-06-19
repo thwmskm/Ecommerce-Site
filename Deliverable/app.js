@@ -97,6 +97,10 @@ app.post("/api/cart/add", (req, res) => {
     customizations,
   } = req.body;
 
+  console.log("Session ID:", req.sessionID);
+  console.log("Cart before:", req.session.cart);
+  console.log("Body received:", req.body);
+
   if (!vehicleId || !name || !price) {
     return res.status(400).json({ error: "Missing required fields" });
   }
@@ -138,6 +142,7 @@ app.post("/api/cart/add", (req, res) => {
       0
     ),
   });
+  console.log("Cart after:", req.session.cart);
 });
 
 app.put("/api/cart/update/:cartItemId", (req, res) => {
