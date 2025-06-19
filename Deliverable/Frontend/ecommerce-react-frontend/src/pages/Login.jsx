@@ -16,6 +16,7 @@ function Login() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
+          credentials: "include",
         }
       );
 
@@ -26,6 +27,7 @@ function Login() {
         // Immediately fetch the user info based on the token.
         fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/userInfo`, {
           headers: { Authorization: `Bearer ${data.token}` },
+          credentials: "include",
         })
           .then((response) => response.json())
           .then((userData) => {

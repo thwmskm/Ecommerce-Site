@@ -26,7 +26,10 @@ function Checkout() {
 
   const fetchCart = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart`);
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
+        method: GET,
+        credentials: "include",
+      });
       const data = await res.json();
       setOrderData({ total: data.totalPrice, cartData: data.cart });
     } catch (error) {
@@ -43,6 +46,7 @@ function Checkout() {
           {
             method: "GET",
             headers: { Authorization: `Bearer ${token}` },
+            credentials: "include",
           }
         );
         const data = await res.json();
@@ -74,6 +78,7 @@ function Checkout() {
         `${import.meta.env.VITE_BACKEND_URL}/api/cart/clear`,
         {
           method: "DELETE",
+          credentials: "include",
         }
       );
       const data = await res.json();
@@ -120,6 +125,7 @@ function Checkout() {
             ...(token && { Authorization: `Bearer ${token}` }),
           },
           body: JSON.stringify(body),
+          credentials: "include",
         }
       );
       const data = await res.json();

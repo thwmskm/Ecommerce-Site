@@ -6,7 +6,9 @@ const Cart = ({ onUpdate }) => {
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
+      credentials: "include",
+    })
       .then((response) => response.json())
       .then((data) => {
         setCart(data.cart);
@@ -20,6 +22,7 @@ const Cart = ({ onUpdate }) => {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity: newQuantity }),
+      credentials: "include",
     }).then(() => onUpdate());
   };
 

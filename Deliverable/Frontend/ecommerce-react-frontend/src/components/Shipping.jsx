@@ -20,6 +20,7 @@ const Shipping = () => {
 
     fetch(`${import.meta.env.VITE_BACKEND_URL}/checkout/fetchShippingInfo`, {
       headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     })
       .then((response) => response.json())
       .then((data) => {

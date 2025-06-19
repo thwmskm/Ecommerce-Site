@@ -8,7 +8,9 @@ function Cart() {
 
   const fetchCart = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart`);
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
+        credentials: "include",
+      });
       const data = await res.json();
       setCart(data.cart);
       setTotalPrice(data.totalPrice);
@@ -36,6 +38,7 @@ function Cart() {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ quantity: newQuantity }),
+          credentials: "include",
         }
       );
 
@@ -52,6 +55,7 @@ function Cart() {
         `${import.meta.env.VITE_BACKEND_URL}/api/cart/remove/${cartItemId}`,
         {
           method: "DELETE",
+          credentials: "include",
         }
       );
       fetchCart();
@@ -65,6 +69,7 @@ function Cart() {
       try {
         await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart/clear`, {
           method: "DELETE",
+          credentials: "include",
         });
         fetchCart();
         window.dispatchEvent(new Event("cartUpdated"));
@@ -90,6 +95,7 @@ function Cart() {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
+            credentials: "include",
           },
         }
       )

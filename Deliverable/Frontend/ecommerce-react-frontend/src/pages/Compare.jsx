@@ -27,7 +27,10 @@ function Compare() {
       const res = await fetch(
         `${
           import.meta.env.VITE_BACKEND_URL
-        }/api/catalog/compare?ids=${idsToFetch.join(",")}`
+        }/api/catalog/compare?ids=${idsToFetch.join(",")}`,
+        {
+          credentials: "include",
+        }
       );
       const data = await res.json();
       setVehicles(data);

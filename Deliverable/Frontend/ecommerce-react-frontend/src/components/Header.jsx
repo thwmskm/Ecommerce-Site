@@ -12,7 +12,9 @@ function Header() {
 
   // Function to update cart count from the back-end
   const updateCartCount = () => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => setCartCount(data.totalItems || 0))
       .catch((err) => console.error("Error fetching cart:", err));
@@ -39,6 +41,7 @@ function Header() {
     if (token) {
       fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/userInfo`, {
         headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       })
         .then((response) => response.json())
         .then((data) => {

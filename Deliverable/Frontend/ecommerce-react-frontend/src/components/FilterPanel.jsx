@@ -15,7 +15,9 @@ function FilterPanel({ onApplyFilters }) {
 
   useEffect(() => {
     // Fetch metadata for filters
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/catalog/metadata`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/catalog/metadata`, {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => {
         setBrands(data.brands || []);

@@ -136,6 +136,7 @@ function VehicleDetails() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ vehicleId: id, customizationIds }),
+          credentials: "include",
         }
       );
       const data = await res.json();
@@ -181,6 +182,7 @@ function VehicleDetails() {
             rating: Number(reviewData.rating),
             comment: reviewData.comment,
           }),
+          credentials: "include",
         }
       );
       if (res.ok) {
