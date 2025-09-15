@@ -38,6 +38,7 @@ app.use(
       maxAge: 3600000,
       secure: true,
       sameSite: "none",
+      domain: "https://ecommerce-site-v73h.onrender.com",
     },
   })
 );
