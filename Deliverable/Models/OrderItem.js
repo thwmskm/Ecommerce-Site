@@ -1,19 +1,19 @@
-const { Model, DataTypes, Sequelize } = require('sequelize');
-const sequelize = require('../config/Database'); // or your actual sequelize instance path
+const { Model, DataTypes, Sequelize } = require("sequelize");
+const sequelize = require("../config/Database"); // or your actual sequelize instance path
 
 class OrderItem extends Model {
   static associate(models) {
     // Associate OrderItem with Order
     OrderItem.belongsTo(models.Order, {
-      foreignKey: 'order_id',
-      onDelete: 'CASCADE'
+      foreignKey: "orderId",
+      onDelete: "CASCADE",
     });
 
     // Associate OrderItem with Vehicle
     // (Make sure `models.Vehicle` is defined and exported properly)
     OrderItem.belongsTo(models.Vehicle, {
-      foreignKey: 'vehicle_id',
-      onDelete: 'CASCADE'
+      foreignKey: "vehicleId",
+      onDelete: "CASCADE",
     });
   }
 }
@@ -26,7 +26,7 @@ OrderItem.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    price:{
+    price: {
       type: DataTypes.DOUBLE,
       allowNull: false,
     },
@@ -42,28 +42,28 @@ OrderItem.init(
     orderId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      field: 'order_id',
+      field: "orderId",
       references: {
-        model: 'Orders', // or 'Order' if that matches your actual table
-        key: 'id',
+        model: "Orders", // or 'Order' if that matches your actual table
+        key: "id",
       },
     },
     // The foreign key referencing Vehicle
     vehicleId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      field: 'vehicle_id',
+      field: "vehicleId",
       references: {
-        model: 'Vehicles', // or 'Vehicle' if that’s your actual table
-        key: 'vid',        // if Vehicle’s primary key is 'vid'
+        model: "Vehicles", // or 'Vehicle' if that’s your actual table
+        key: "vid", // if Vehicle’s primary key is 'vid'
       },
     },
   },
   {
     sequelize,
-    modelName: 'OrderItem',
-    tableName: 'OrderItems', 
-    timestamps: false,           // or true if you want Sequelize to handle it automatically
+    modelName: "OrderItem",
+    tableName: "OrderItems",
+    timestamps: false, // or true if you want Sequelize to handle it automatically
   }
 );
 
