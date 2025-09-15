@@ -32,8 +32,8 @@ function Checkout() {
       });
       const data = await res.json();
       setOrderData({ total: data.totalPrice, cartData: data.cart });
-      console.log("Checkout session:", req.session);
     } catch (error) {
+      console.log("Checkout session:", req.session);
       console.error("Error fetching cart:", error);
     }
   };
