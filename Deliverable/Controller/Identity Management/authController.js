@@ -38,6 +38,10 @@ exports.login = async (req, res) => {
       attributes: ["id", "email", "password", "isAdmin"], // <-- added isAdmin here
     });
 
+    //debug for login credential validity
+    console.log("Login request body:", req.body);
+    console.log("User from DB:", user);
+
     if (!user) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
