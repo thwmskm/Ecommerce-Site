@@ -27,13 +27,12 @@ function Checkout() {
   const fetchCart = async () => {
     try {
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
-        method: GET,
+        method: "GET",
         credentials: "include",
       });
       const data = await res.json();
       setOrderData({ total: data.totalPrice, cartData: data.cart });
     } catch (error) {
-      console.log("Checkout session:", req.session);
       console.error("Error fetching cart:", error);
     }
   };
