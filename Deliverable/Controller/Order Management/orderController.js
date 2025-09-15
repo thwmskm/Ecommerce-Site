@@ -154,21 +154,21 @@ exports.verify = async (req, res) => {
         shippingId: shippingInfo.sid,
       });
 
-      await Promise.all(
+      /*await Promise.all(
         cartData.map(async (item) => {
           await OrderItem.create({
             price: item.price,
             productName: item.name,
             quantity: item.quantity,
             orderId: order.id,
-            vehicleId: item.vid || item.vehicleId,
+            vid: item.vid || item.vehicleId,
           });
 
           await ItemSold.create({
-            vehicleId: item.vid || item.vehicleId,
+            vid: item.vid || item.vehicleId,
             saleDate: new Date(),
             quantitySold: item.quantity,
-            priceAtSale: item.price,
+            price_at_sale: item.price,
           });
 
           const ipRes = await fetch("https://api.ipify.org?format=json");
@@ -188,7 +188,7 @@ exports.verify = async (req, res) => {
             }
           );
         })
-      );
+      );*/
     } else {
       // Guest flow: create a shipping record and order as before.
       const guestUser = await User.findOne({ where: { id: 1 } });
@@ -215,21 +215,21 @@ exports.verify = async (req, res) => {
         shippingId: shippingInfo.sid,
       });
 
-      await Promise.all(
+      /*await Promise.all(
         cartData.map(async (item) => {
           await OrderItem.create({
             price: item.price,
             productName: item.name,
             quantity: item.quantity,
             orderId: order.id,
-            vehicleId: item.vid || item.vehicleId,
+            vid: item.vid || item.vehicleId,
           });
 
           await ItemSold.create({
-            vehicleId: item.vid || item.vehicleId,
+            vid: item.vid || item.vehicleId,
             saleDate: new Date(),
             quantitySold: item.quantity,
-            priceAtSale: item.price,
+            price_at_sale: item.price,
           });
 
           const ipRes = await fetch("https://api.ipify.org?format=json");
@@ -250,7 +250,7 @@ exports.verify = async (req, res) => {
             }
           );
         })
-      );
+      );*/
     }
 
     paymentCounter++;
