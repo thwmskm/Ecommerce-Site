@@ -69,7 +69,6 @@ exports.verify = async (req, res) => {
       !prov ||
       !country ||
       !postalCode ||
-      !num ||
       !cardNum ||
       !cardName ||
       !cardExp ||
