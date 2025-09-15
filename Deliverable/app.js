@@ -29,6 +29,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
   express.static(path.join(__dirname, "Frontend/ecommerce-react-frontend/dist"))
 );*/
 
+app.set("trust proxy", 1);
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -38,7 +40,7 @@ app.use(
       maxAge: 3600000,
       secure: true,
       sameSite: "none",
-      domain: "ecommerce-site-v73h.onrender.com",
+      //domain: "ecommerce-site-v73h.onrender.com",
     },
   })
 );
