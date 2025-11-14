@@ -144,13 +144,13 @@ const handleRemoveVehicle = (vehicleId) => {
   const updated = stored.filter((id) => id !== vehicleId);
   localStorage.setItem("vehicles_to_compare", JSON.stringify(updated));
   window.dispatchEvent(new Event("compareUpdated"));
-  window.location.reload();
+  setVehicles(updated);
 };
 
 const handleClearComparison = () => {
   localStorage.removeItem("vehicles_to_compare");
   window.dispatchEvent(new Event("compareUpdated"));
-  window.location.reload();
+  setVehicles([]);
 };
 
 export default Compare;
