@@ -39,6 +39,24 @@ function Compare() {
     }
   };
 
+  //Remove select vehicle from Comparison
+  const handleRemoveVehicle = (vehicleId) => {
+    const stored = JSON.parse(
+      localStorage.getItem("vehicles_to_compare") || "[]"
+    );
+    const updated = stored.filter((id) => id !== vehicleId);
+    localStorage.setItem("vehicles_to_compare", JSON.stringify(updated));
+    window.dispatchEvent(new Event("compareUpdated"));
+    setVehicles(updated);
+  };
+
+  //Clear Comparison
+  const handleClearComparison = () => {
+    localStorage.removeItem("vehicles_to_compare");
+    window.dispatchEvent(new Event("compareUpdated"));
+    setVehicles([]);
+  };
+
   // Instead of checking for at least 2 items, only check for at least 1.
   if (comparisonList.length < 1) {
     return (
@@ -135,23 +153,5 @@ function Compare() {
     </div>
   );
 }
-
-//Remove select vehicle from Comparison
-const handleRemoveVehicle = (vehicleId) => {
-  const stored = JSON.parse(
-    localStorage.getItem("vehicles_to_compare") || "[]"
-  );
-  const updated = stored.filter((id) => id !== vehicleId);
-  localStorage.setItem("vehicles_to_compare", JSON.stringify(updated));
-  window.dispatchEvent(new Event("compareUpdated"));
-  setVehicles(updated);
-};
-
-//Clear Comparison
-const handleClearComparison = () => {
-  localStorage.removeItem("vehicles_to_compare");
-  window.dispatchEvent(new Event("compareUpdated"));
-  setVehicles([]);
-};
 
 export default Compare;
