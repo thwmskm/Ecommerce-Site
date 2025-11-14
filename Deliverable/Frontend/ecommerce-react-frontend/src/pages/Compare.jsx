@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+// Compare.jsx
+
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Compare() {
@@ -6,57 +8,38 @@ function Compare() {
   const [comparisonList, setComparisonList] = useState([]);
   const COMPARE_STORAGE_KEY = "vehicles_to_compare";
 
-  // Load comparisonList from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem(COMPARE_STORAGE_KEY);
     if (stored) {
       const ids = JSON.parse(stored);
       setComparisonList(ids);
+      if (ids.length === 1) {
+        // Duplicate the only ID to satisfy backend's minimum requirement.
+        fetchComparison([ids[0], ids[0]]);
+      } else if (ids.length >= 2) {
+        fetchComparison(ids);
+      }
     }
   }, []);
 
-  // Fetch vehicle objects whenever comparisonList changes (if ≥2)
-  useEffect(() => {
-    const fetchComparison = async (idsToFetch) => {
-      if (!idsToFetch || idsToFetch.length < 2) return; // backend requires ≥2
-      try {
-        const res = await fetch(
-          `${
-            import.meta.env.VITE_BACKEND_URL
-          }/api/catalog/compare?ids=${idsToFetch.join(",")}`,
-          { credentials: "include" }
-        );
-        const data = await res.json();
-        setVehicles(data);
-      } catch (error) {
-        console.error("Error fetching comparison:", error);
-        setVehicles([]);
-      }
-    };
-
-    if (comparisonList.length === 1) {
-      // duplicate to satisfy backend
-      fetchComparison([comparisonList[0], comparisonList[0]]);
-    } else if (comparisonList.length >= 2) {
-      fetchComparison(comparisonList);
-    } else {
-      setVehicles([]); // nothing to show
+  const fetchComparison = async (idsToFetch) => {
+    try {
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/catalog/compare?ids=${idsToFetch.join(",")}`,
+        {
+          credentials: "include",
+        }
+      );
+      const data = await res.json();
+      setVehicles(data);
+    } catch (error) {
+      console.error("Error fetching comparison:", error);
     }
-  }, [comparisonList]);
-
-  // Remove a single vehicle
-  const handleRemoveVehicle = (vehicleId) => {
-    const updatedIds = comparisonList.filter((id) => id !== vehicleId);
-    setComparisonList(updatedIds);
-    localStorage.setItem(COMPARE_STORAGE_KEY, JSON.stringify(updatedIds));
   };
 
-  // Clear all vehicles
-  const handleClearComparison = () => {
-    setComparisonList([]);
-    localStorage.removeItem(COMPARE_STORAGE_KEY);
-  };
-
+  // Instead of checking for at least 2 items, only check for at least 1.
   if (comparisonList.length < 1) {
     return (
       <div className="compare-container">
@@ -69,7 +52,7 @@ function Compare() {
     );
   }
 
-  // Prepare display, remove duplicated copy if only 1 ID
+  // If only one vehicle was added, remove the duplicated copy for display.
   const vehiclesToDisplay =
     comparisonList.length === 1 && vehicles.length === 2
       ? vehicles.slice(0, 1)
@@ -152,5 +135,23 @@ function Compare() {
     </div>
   );
 }
+
+//Remove select vehicle from Comparison
+const handleRemoveVehicle = (vehicleId) => {
+  const stored = JSON.parse(
+    localStorage.getItem("vehicles_to_compare") || "[]"
+  );
+  const updated = stored.filter((id) => id !== vehicleId);
+  localStorage.setItem("vehicles_to_compare", JSON.stringify(updated));
+  window.dispatchEvent(new Event("compareUpdated"));
+  setVehicles(updated);
+};
+
+//Clear Comparison
+const handleClearComparison = () => {
+  localStorage.removeItem("vehicles_to_compare");
+  window.dispatchEvent(new Event("compareUpdated"));
+  setVehicles([]);
+};
 
 export default Compare;
