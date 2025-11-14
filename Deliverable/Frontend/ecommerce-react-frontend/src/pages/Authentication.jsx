@@ -239,6 +239,9 @@ const Authentication = () => {
         </div>
       )}
 
+      <Link className="guest-link" to="/Checkout">
+        Continue as guest
+      </Link>
       <a href="/Checkout" className="guest-link">
         Continue as guest
       </a>
