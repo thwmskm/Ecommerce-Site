@@ -41,13 +41,12 @@ function Compare() {
 
   //Remove select vehicle from Comparison
   const handleRemoveVehicle = (vehicleId) => {
-    const stored = JSON.parse(
-      localStorage.getItem("vehicles_to_compare") || "[]"
-    );
-    const updated = stored.filter((id) => id !== vehicleId);
-    localStorage.setItem("vehicles_to_compare", JSON.stringify(updated));
-    window.dispatchEvent(new Event("compareUpdated"));
-    setVehicles(updated);
+    const updatedIds = comparisonList.filter((id) => id !== vehicleId);
+    setComparisonList(updatedIds);
+    localStorage.setItem(COMPARE_STORAGE_KEY, JSON.stringify(updatedIds));
+
+    const updatedVehicles = vehicles.filter((v) => updatedIds.includes(v.vid));
+    setVehicles(updatedVehicles);
   };
 
   //Clear Comparison
@@ -71,10 +70,9 @@ function Compare() {
   }
 
   // If only one vehicle was added, remove the duplicated copy for display.
-  const vehiclesToDisplay =
-    comparisonList.length === 1 && vehicles.length === 2
-      ? vehicles.slice(0, 1)
-      : vehicles;
+  const vehiclesToDisplay = vehicles.filter((v) =>
+    comparisonList.includes(v.vid)
+  );
 
   return (
     <div className="compare-container">
