@@ -34,8 +34,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
   express.static(path.join(__dirname, "Frontend/ecommerce-react-frontend/dist"))
 );*/
 
-//trust proxy
-app.set("trust proxy", 1);
+//trust exactly 2 proxy in front
+app.set("trust proxy", 2);
 
 //create session
 app.use(
