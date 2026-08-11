@@ -30,3 +30,20 @@ test('cart items correct', async ({ page }) => {
     await expect(page.getByText('Ford Mustang')).toBeVisible();
 
 });
+
+//checking if Clear Cart button clears entire cart.
+test('clearing cart', async ({ page }) => {
+
+    await page.goto('https://ecommerce-site-frontend-drab.vercel.app/');
+
+    await page.getByRole('link', { name: 'Cart' }).click();
+
+    page.on('dialog', async dialog => {
+        expect(dialog.message()).toBe('Are you sure you want to clear your cart?');
+        await dialog.accept();
+    });
+
+    await page.getByRole('button', { name: 'Clear Cart' }).click();
+
+    await expect(page.getByText('Continue Shopping')).toBeVisible();
+});
