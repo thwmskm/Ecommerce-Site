@@ -51,7 +51,7 @@ function VehicleDetails() {
   function getTodayDate() {
     const today = new Date();
     return `${String(today.getMonth() + 1).padStart(2, "0")}${String(
-      today.getDate()
+      today.getDate(),
     ).padStart(2, "0")}${today.getFullYear()}`;
   }
 
@@ -60,7 +60,7 @@ function VehicleDetails() {
     async function fetchVehicle() {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/catalog/vehicles/${id}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/catalog/vehicles/${id}`,
         );
         const data = await res.json();
         setVehicle(data);
@@ -75,7 +75,7 @@ function VehicleDetails() {
         const res = await fetch(
           `${
             import.meta.env.VITE_BACKEND_URL
-          }/api/catalog/vehicles/${id}/customizations`
+          }/api/catalog/vehicles/${id}/customizations`,
         );
         const data = await res.json();
         // Assume data is grouped by category.
@@ -90,7 +90,7 @@ function VehicleDetails() {
         const res = await fetch(
           `${
             import.meta.env.VITE_BACKEND_URL
-          }/api/catalog/vehicles/${id}/reviews`
+          }/api/catalog/vehicles/${id}/reviews`,
         );
         const data = await res.json();
         setReviews(data);
@@ -137,7 +137,7 @@ function VehicleDetails() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ vehicleId: id, customizationIds }),
           credentials: "include",
-        }
+        },
       );
       const data = await res.json();
       setFinalPrice(data.finalPrice);
@@ -183,13 +183,13 @@ function VehicleDetails() {
             comment: reviewData.comment,
           }),
           credentials: "include",
-        }
+        },
       );
       if (res.ok) {
         const newReviewsRes = await fetch(
           `${
             import.meta.env.VITE_BACKEND_URL
-          }/api/catalog/vehicles/${id}/reviews`
+          }/api/catalog/vehicles/${id}/reviews`,
         );
         const newReviews = await newReviewsRes.json();
         setReviews(newReviews);

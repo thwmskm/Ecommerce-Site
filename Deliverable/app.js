@@ -14,11 +14,16 @@ const adminAnalyticsRoutes = require("./Routes/adminAnalytics");
 require("dotenv").config();
 const cors = require("cors");
 
+//start express app
 const app = express();
+
+//port
 const PORT = process.env.PORT || 3000;
 
+//frontend url
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 
+//allow req from frontend (credentials: true = allow cookies)
 app.use(cors({ origin: FRONTEND_ORIGIN, credentials: true }));
 
 app.use(bodyParser.json());
@@ -29,8 +34,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
   express.static(path.join(__dirname, "Frontend/ecommerce-react-frontend/dist"))
 );*/
 
+//trust proxy
 app.set("trust proxy", 1);
 
+//create session
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -42,9 +49,10 @@ app.use(
       sameSite: "none",
       //domain: "ecommerce-site-v73h.onrender.com",
     },
-  })
+  }),
 );
 
+//create cart session if not exist
 app.use((req, res, next) => {
   if (!req.session.cart) {
     req.session.cart = [];
@@ -63,7 +71,7 @@ app.use("/admin/analytics", adminAnalyticsRoutes);
 const isAdmin = require("./Routes/isAdmin");
 app.get("/admin/analytics", isAdmin, (req, res) => {
   res.sendFile(
-    path.join(__dirname, "Deliverable", "View", "adminAnalytics.html")
+    path.join(__dirname, "Deliverable", "View", "adminAnalytics.html"),
   );
 });
 
@@ -78,22 +86,24 @@ app.use("/auth", authRoutes);
 //finding vehicles route
 app.use("/vehicles", vehicleRoutes);
 
+//GET
 app.get("/api/cart", (req, res) => {
   res.json({
     cart: req.session.cart,
     totalItems: req.session.cart.reduce(
       (total, item) => total + item.quantity,
-      0
+      0,
     ),
     totalPrice: req.session.cart.reduce(
       (total, item) => total + item.price * item.quantity,
-      0
+      0,
     ),
   });
   console.log("Session Cookie:", req.headers.cookie);
   console.log("SESSION ID:", req.sessionID);
 });
 
+//POST
 app.post("/api/cart/add", (req, res) => {
   const {
     vehicleId,
@@ -118,7 +128,7 @@ app.post("/api/cart/add", (req, res) => {
     : vehicleId;
 
   const existingItemIndex = req.session.cart.findIndex(
-    (item) => item.cartItemId === cartItemId
+    (item) => item.cartItemId === cartItemId,
   );
 
   if (existingItemIndex > -1) {
@@ -142,16 +152,17 @@ app.post("/api/cart/add", (req, res) => {
     cart: req.session.cart,
     totalItems: req.session.cart.reduce(
       (total, item) => total + item.quantity,
-      0
+      0,
     ),
     totalPrice: req.session.cart.reduce(
       (total, item) => total + item.price * item.quantity,
-      0
+      0,
     ),
   });
   console.log("Cart after:", req.session.cart);
 });
 
+//PUT
 app.put("/api/cart/update/:cartItemId", (req, res) => {
   const { cartItemId } = req.params;
   const { quantity } = req.body;
@@ -161,7 +172,7 @@ app.put("/api/cart/update/:cartItemId", (req, res) => {
   }
 
   const itemIndex = req.session.cart.findIndex(
-    (item) => item.cartItemId === cartItemId
+    (item) => item.cartItemId === cartItemId,
   );
 
   if (itemIndex === -1) {
@@ -175,20 +186,21 @@ app.put("/api/cart/update/:cartItemId", (req, res) => {
     cart: req.session.cart,
     totalItems: req.session.cart.reduce(
       (total, item) => total + item.quantity,
-      0
+      0,
     ),
     totalPrice: req.session.cart.reduce(
       (total, item) => total + item.price * item.quantity,
-      0
+      0,
     ),
   });
 });
 
+//DELETE
 app.delete("/api/cart/remove/:cartItemId", (req, res) => {
   const { cartItemId } = req.params;
 
   req.session.cart = req.session.cart.filter(
-    (item) => item.cartItemId !== cartItemId
+    (item) => item.cartItemId !== cartItemId,
   );
 
   res.json({
@@ -196,11 +208,11 @@ app.delete("/api/cart/remove/:cartItemId", (req, res) => {
     cart: req.session.cart,
     totalItems: req.session.cart.reduce(
       (total, item) => total + item.quantity,
-      0
+      0,
     ),
     totalPrice: req.session.cart.reduce(
       (total, item) => total + item.price * item.quantity,
-      0
+      0,
     ),
   });
 });
